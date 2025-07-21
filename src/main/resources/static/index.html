@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movies</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; }
+        form { margin-bottom: 1.5rem; }
+        input, button { padding: 0.5rem; font-size: 1rem; }
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 1rem; }
+        .title { font-weight: bold; }
+        .desc { margin-left: 1rem; color: #555; }
+    </style>
+</head>
+<body>
+<h1>Movies</h1>
+
+<!-- Add‑movie form -->
+<form id="addMovieForm">
+    <input id="newTitle" placeholder="New movie title" required/>
+    <button type="submit">Add Movie</button>
+</form>
+
+<!-- List of movies -->
+<ul id="movieList">
+    <li>Loading…</li>
+</ul>
+
+<script>
+    // Fetch & render all movies
+    async function loadMovies() {
+      const res = await fetch('/movies');
+      const movies = await res.json();
+      const ul = document.getElementById('movieList');
+      ul.innerHTML = '';
+
+      if (!movies.length) {
+        ul.innerHTML = '<li>No movies yet</li>';
+        return;
+      }
+
+      movies.forEach(m => {
+        const li = document.createElement('li');
+
+        const title = document.createElement('div');
+        title.textContent = m.title;
+        title.className = 'title';
+
+        const desc = document.createElement('div');
+        desc.textContent = m.description || 'PLACEHOLDER / ERROR';
+        desc.className = 'desc';
+
+        li.appendChild(title);
+        li.appendChild(desc);
+        ul.appendChild(li);
+      });
+    }
+
+    // Handle form submit to add a new movie
+    document
+      .getElementById('addMovieForm')
+      .addEventListener('submit', async e => {
+        e.preventDefault();
+        const input = document.getElementById('newTitle');
+        const title = input.value.trim();
+        if (!title) return;
+
+        // POST to /movies
+        await fetch('/movies', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title })
+        });
+
+        input.value = '';
+        loadMovies();
+      });
+
+    // On page load
+    window.addEventListener('DOMContentLoaded', loadMovies);
+</script>
+</body>
+</html>
