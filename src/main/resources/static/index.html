@@ -19,6 +19,7 @@
 <!-- Add‑movie form -->
 <form id="addMovieForm">
     <input id="newTitle" placeholder="New movie title" required/>
+    <input id="newRating" type="number" placeholder="Rating (1-10)" min="1" max="10" step="0.1" required/>
     <button type="submit">Add Movie</button>
 </form>
 
@@ -51,8 +52,13 @@
         desc.textContent = m.description || 'PLACEHOLDER / ERROR';
         desc.className = 'desc';
 
+        const rating = document.createElement('div');
+        rating.textContent = `Rating: ${m.rating || 'N/A'}`;
+        rating.className = 'rating';
+
         li.appendChild(title);
         li.appendChild(desc);
+        li.appendChild(rating);
         ul.appendChild(li);
       });
     }
@@ -63,17 +69,21 @@
       .addEventListener('submit', async e => {
         e.preventDefault();
         const input = document.getElementById('newTitle');
+        const ratingInput = document.getElementById('newRating');
+
         const title = input.value.trim();
-        if (!title) return;
+        const rating = parseFloat(ratingInput.value);
+        if (!title || isNaN(rating)) return;
 
         // POST to /movies
         await fetch('/movies', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ title })
+          body: JSON.stringify({ title, rating })
         });
 
         input.value = '';
+        ratingInput.value = '';
         loadMovies();
       });
 

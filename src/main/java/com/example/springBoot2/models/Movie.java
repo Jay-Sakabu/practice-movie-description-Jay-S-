@@ -12,6 +12,7 @@ public class Movie {
     @Lob
     @Column(length = 10000) // optional, to allow longer descriptions
     private String description;
+    private double rating;
 
     // getters & setters
     public Integer getId() {
@@ -36,5 +37,13 @@ public class Movie {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
     }
 }
