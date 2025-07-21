@@ -11,6 +11,9 @@
         li { margin-bottom: 1rem; }
         .title { font-weight: bold; }
         .desc { margin-left: 1rem; color: #555; }
+        .rating{ font-style: italic; }
+        .rating.low{ color: red; }
+        .rating.high{ color: green; }
     </style>
 </head>
 <body>
@@ -55,6 +58,10 @@
         const rating = document.createElement('div');
         rating.textContent = `Rating: ${m.rating || 'N/A'}`;
         rating.className = 'rating';
+        <!--  If rating is greater than 5, it's considered good and gets the rating high class  -->
+        if (typeof m.rating === 'number') {
+        rating.classList.add(m.rating <= 5 ? 'low' : 'high');
+      }
 
         li.appendChild(title);
         li.appendChild(desc);
